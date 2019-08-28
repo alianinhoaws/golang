@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"sync"
-	"time"
 )
 
 func main() {
@@ -11,13 +10,20 @@ func main() {
 
 	wg.Add(1)
 	go func() {
+		defer wg.Done()
 		count("sheep")
-		wg.Done()
 	}()
 
 	wg.Add(1)
 	go func() {
+		defer wg.Done()
 		count("shark")
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		count("Elephant")
 	}()
 	wg.Wait()
 }
@@ -25,6 +31,5 @@ func main() {
 func count(thing string) {
 	for i := 1; i <= 5; i++ {
 		fmt.Println(i, thing)
-		time.Sleep(time.Millisecond * 500)
 	}
 }
