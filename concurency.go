@@ -2,22 +2,34 @@ package main
 
 import (
 	"fmt"
-
-	"time"
+	"sync"
 )
 
-func main (){
-	c:= make(chan string)
-	go count ("sheep",c)
+func main() {
+	var wg sync.WaitGroup
 
-	msg := <- c
-	fmt.Println(msg)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		count("sheep")
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		count("shark")
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		count("Elephant")
+	}()
+	wg.Wait()
 }
 
-func count (thing string, c chan string){
+func count(thing string) {
 	for i := 1; i <= 5; i++ {
-		c <- thing
-		fmt.Println(i,thing)
-		time.Sleep(time.Millisecond*500)
+		fmt.Println(i, thing)
 	}
 }
